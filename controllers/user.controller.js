@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const Recipe = require("../models/Recipe");
+const Favorite = require("../models/Favorite");
 
 exports.getAll = async (req, res) => {
   try {
@@ -33,6 +35,22 @@ exports.updateProfile = async (req, res) => {
 
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getStats = async (req, res) => {
+  try {
+    const email = req.user.email;
+
+    const totalRecipes = await Recipe.countDocuments({ authorEmail: email, status: "active" });
+    const totalFavorites = await Favorite.countDocuments({ userEmail: email });
+
+    const recipes = await Recipe.find({ authorEmail: email, status: "active" }).select("likesCount");
+    const totalLikesReceived = recipes.reduce((sum, r) => sum + (r.likesCount || 0), 0);
+
+    res.json({ totalRecipes, totalFavorites, totalLikesReceived });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

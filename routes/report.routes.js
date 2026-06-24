@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const resolveUser = require("../middleware/resolveUser");
 const {
   create,
   getAll,
@@ -8,7 +9,7 @@ const {
 
 const router = Router();
 
-router.post("/", create);
+router.post("/", resolveUser, create);
 router.get("/", getAll);
 router.patch("/:id/dismiss", dismiss);
 router.delete("/:id/remove-recipe", removeRecipe);

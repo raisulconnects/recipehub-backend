@@ -1,9 +1,9 @@
 const express = require("express");
 const dotenv = require("dotenv").config();
+const cors = require("cors");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 
-const authRoutes = require("./routes/auth.routes");
 const recipeRoutes = require("./routes/recipe.routes");
 const userRoutes = require("./routes/user.routes");
 const favoriteRoutes = require("./routes/favorite.routes");
@@ -16,11 +16,14 @@ const app = express();
 connectDB();
 
 // Middleware
+app.use(cors({
+  origin: process.env.CLIENT_URL || "http://localhost:3000",
+  credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 
 // Routes
-app.use("/api/auth", authRoutes);
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/favorites", favoriteRoutes);

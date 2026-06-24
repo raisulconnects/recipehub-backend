@@ -2,11 +2,11 @@ const Recipe = require("../models/Recipe");
 
 exports.getAll = async (req, res) => {
   try {
-    const { categories, page = 1, limit = 10 } = req.query;
-    const filter = { status: "active" };
-    if (categories) {
-      filter.category = { $in: categories.split(",") };
-    }
+    const { categories, authorEmail, showAll, page = 1, limit = 10 } = req.query;
+    const filter = {};
+    if (!showAll) filter.status = "active";
+    if (categories) filter.category = { $in: categories.split(",") };
+    if (authorEmail) filter.authorEmail = authorEmail;
 
     const total = await Recipe.countDocuments(filter);
     const recipes = await Recipe.find(filter)

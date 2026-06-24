@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const resolveUser = require("../middleware/resolveUser");
 const {
   getAll,
   getById,
@@ -17,10 +18,10 @@ router.get("/", getAll);
 router.get("/featured", getFeatured);
 router.get("/popular", getPopular);
 router.get("/:id", getById);
-router.post("/", create);
-router.patch("/:id", update);
-router.delete("/:id", remove);
-router.patch("/:id/like", toggleLike);
+router.post("/", resolveUser, create);
+router.patch("/:id", resolveUser, update);
+router.delete("/:id", resolveUser, remove);
+router.patch("/:id/like", resolveUser, toggleLike);
 router.patch("/:id/feature", toggleFeature);
 
 module.exports = router;

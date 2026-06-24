@@ -1,14 +1,17 @@
 const { Router } = require("express");
+const resolveUser = require("../middleware/resolveUser");
 const {
   getAll,
   toggleBlock,
   updateProfile,
+  getStats,
 } = require("../controllers/user.controller");
 
 const router = Router();
 
 router.get("/", getAll);
+router.get("/stats", resolveUser, getStats);
 router.patch("/:id/block", toggleBlock);
-router.patch("/profile", updateProfile);
+router.patch("/profile", resolveUser, updateProfile);
 
 module.exports = router;

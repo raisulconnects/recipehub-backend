@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const resolveUser = require("../middleware/resolveUser");
 const {
   createCheckoutSession,
   verify,
@@ -8,9 +9,9 @@ const {
 
 const router = Router();
 
-router.post("/create-checkout-session", createCheckoutSession);
-router.get("/verify", verify);
-router.get("/purchased", getPurchased);
+router.post("/create-checkout-session", resolveUser, createCheckoutSession);
+router.get("/verify", resolveUser, verify);
+router.get("/purchased", resolveUser, getPurchased);
 router.get("/transactions", getTransactions);
 
 module.exports = router;

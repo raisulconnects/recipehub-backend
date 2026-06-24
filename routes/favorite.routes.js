@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const resolveUser = require("../middleware/resolveUser");
 const {
   getAll,
   add,
@@ -7,8 +8,8 @@ const {
 
 const router = Router();
 
-router.get("/", getAll);
-router.post("/", add);
-router.delete("/:recipeId", remove);
+router.get("/", resolveUser, getAll);
+router.post("/", resolveUser, add);
+router.delete("/:recipeId", resolveUser, remove);
 
 module.exports = router;
