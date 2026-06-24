@@ -7,6 +7,7 @@ const reportSchema = new mongoose.Schema({
     type: String,
     enum: ["Spam", "Offensive Content", "Copyright Issue"],
   },
+  note: { type: String, maxlength: 200, default: "" },
   status: { type: String, enum: ["pending", "dismissed"], default: "pending" },
   createdAt: { type: Date, default: Date.now },
 });

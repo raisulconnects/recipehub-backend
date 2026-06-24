@@ -3,7 +3,7 @@ const Recipe = require("../models/Recipe");
 
 exports.create = async (req, res) => {
   try {
-    const { recipeId, reason } = req.body;
+    const { recipeId, reason, note } = req.body;
     if (!recipeId || !reason)
       return res.status(400).json({ message: "Recipe ID and reason are required" });
 
@@ -11,6 +11,7 @@ exports.create = async (req, res) => {
       recipeId,
       reporterEmail: req.user.email,
       reason,
+      note: (note || "").slice(0, 200),
     });
 
     res.status(201).json(report);
