@@ -5,9 +5,17 @@ const paymentSchema = new mongoose.Schema({
   userId: String,
   amount: Number,
   type: { type: String, enum: ["recipe", "premium"] },
-  recipeId: { type: mongoose.Schema.Types.ObjectId, ref: "Recipe", default: null },
+  recipeId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Recipe",
+    default: null,
+  },
   transactionId: String,
-  paymentStatus: { type: String, enum: ["success", "failed"], default: "success" },
+  paymentStatus: {
+    type: String,
+    enum: ["success", "failed"],
+    default: "success",
+  },
   paidAt: { type: Date, default: Date.now },
 });
 
