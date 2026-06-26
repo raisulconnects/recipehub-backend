@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const resolveUser = require("../middleware/resolveUser");
+const verifyToken = require("../middleware/verifyToken");
 const {
   getAll,
   add,
@@ -9,7 +10,7 @@ const {
 const router = Router();
 
 router.get("/", resolveUser, getAll);
-router.post("/", resolveUser, add);
-router.delete("/:recipeId", resolveUser, remove);
+router.post("/", verifyToken, resolveUser, add);
+router.delete("/:recipeId", verifyToken, resolveUser, remove);
 
 module.exports = router;

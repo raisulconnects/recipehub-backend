@@ -1,32 +1,24 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const { createRemoteJWKSet, jwtVerify } = require("jose-cjs");
+
+let jwks;
 
 const verifyToken = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ message: "Access denied. No token provided." });
+  }
+
+  const token = authHeader.split(" ")[1];
+
   try {
-    const token = req.cookies?.token;
-    if (!token)
-      return res.status(401).json({ message: "Not authenticated" });
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select("-password");
-
-    if (!user)
-      return res.status(401).json({ message: "User not found" });
-    if (user.isBlocked)
-      return res.status(403).json({ message: "Account is blocked" });
-
-    req.user = {
-      id: String(user._id),
-      name: user.name,
-      email: user.email,
-      image: user.image || "",
-      role: user.role,
-      isPremium: user.isPremium,
-    };
-
+    if (!jwks) {
+      jwks = createRemoteJWKSet(new URL("/api/auth/jwks", process.env.AUTH_URL));
+    }
+    const { payload } = await jwtVerify(token, jwks);
+    req.userId = payload.sub;
     next();
-  } catch (error) {
-    return res.status(401).json({ message: "Invalid or expired token" });
+  } catch {
+    res.status(401).json({ message: "Invalid or expired token" });
   }
 };
 

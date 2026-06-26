@@ -4,19 +4,28 @@ const COOKIE_NAME = "better-auth.session_token";
 
 const resolveUser = async (req, res, next) => {
   try {
-    const cookie = req.cookies?.[COOKIE_NAME];
-    if (!cookie) return next();
+    let userId;
 
-    const [token] = cookie.split(".");
-    if (!token) return next();
+    const cookie = req.cookies?.[COOKIE_NAME];
+    if (cookie) {
+      const [token] = cookie.split(".");
+      if (token) {
+        const db = mongoose.connection.db;
+        const session = await db.collection("session").findOne({ token });
+        if (session && new Date(session.expiresAt) > new Date()) {
+          userId = session.userId;
+        }
+      }
+    }
+
+    if (!userId && req.userId) {
+      userId = req.userId;
+    }
+
+    if (!userId) return next();
 
     const db = mongoose.connection.db;
-    const session = await db.collection("session").findOne({ token });
-
-    if (!session || new Date(session.expiresAt) < new Date()) return next();
-
-    const user = await db.collection("user").findOne({ _id: session.userId });
-
+    const user = await db.collection("user").findOne({ _id: userId });
     if (!user || user.isBlocked) return next();
 
     req.user = {
