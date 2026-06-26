@@ -13,6 +13,7 @@ exports.createCheckoutSession = async (req, res) => {
       session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         mode: "payment",
+        customer_email: req.user.email,
         line_items: [{ price_data: { currency: "usd", product_data: { name: "Recipe Purchase" }, unit_amount: 299 }, quantity: 1 }],
         metadata: { userId: req.user.id, userEmail: req.user.email, type, recipeId: recipeId || "" },
         success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=recipe`,
@@ -22,6 +23,7 @@ exports.createCheckoutSession = async (req, res) => {
       session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         mode: "payment",
+        customer_email: req.user.email,
         line_items: [{ price_data: { currency: "usd", product_data: { name: "Premium Membership" }, unit_amount: 999 }, quantity: 1 }],
         metadata: { userId: req.user.id, userEmail: req.user.email, type },
         success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=premium`,
