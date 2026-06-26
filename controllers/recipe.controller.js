@@ -2,11 +2,19 @@ const Recipe = require("../models/Recipe");
 
 exports.getAll = async (req, res) => {
   try {
-    const { categories, authorEmail, showAll, page = 1, limit = 10 } = req.query;
+    const { categories, authorEmail, showAll, search, page = 1, limit = 10 } = req.query;
     const filter = {};
     if (!showAll) filter.status = "active";
     if (categories) filter.category = { $in: categories.split(",") };
     if (authorEmail) filter.authorEmail = authorEmail;
+    if (search) {
+      const regex = { $regex: search, $options: "i" };
+      filter.$or = [
+        { recipeName: regex },
+        { cuisineType: regex },
+        { category: regex },
+      ];
+    }
 
     const total = await Recipe.countDocuments(filter);
     const recipes = await Recipe.find(filter)
@@ -36,7 +44,7 @@ exports.getFeatured = async (req, res) => {
 
 exports.getPopular = async (req, res) => {
   try {
-    const recipes = await Recipe.find({ status: "active" }).sort({ likesCount: -1 }).limit(10);
+    const recipes = await Recipe.find({ status: "active" }).sort({ likesCount: -1 }).limit(3);
     res.json(recipes);
   } catch (error) {
     res.status(500).json({ message: error.message });
