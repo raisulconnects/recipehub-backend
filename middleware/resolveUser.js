@@ -1,13 +1,16 @@
 const mongoose = require("mongoose");
 
 const COOKIE_NAME = "better-auth.session_token";
+const PROD_COOKIE_NAME = "__Secure-better-auth.session_token";
 
 const resolveUser = async (req, res, next) => {
   try {
     await mongoose.connection.asPromise();
     let userId;
 
-    const cookie = req.cookies?.[COOKIE_NAME];
+    const prodCookie = req.cookies?.[PROD_COOKIE_NAME];
+    const devCookie = req.cookies?.[COOKIE_NAME];
+    const cookie = prodCookie || devCookie;
     if (cookie) {
       const [token] = cookie.split(".");
       if (token) {
