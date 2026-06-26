@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const resolveUser = require("../middleware/resolveUser");
 const verifyToken = require("../middleware/verifyToken");
+const verifyAdmin = require("../middleware/verifyAdmin");
 const {
   getAll,
   toggleBlock,
@@ -10,9 +11,9 @@ const {
 
 const router = Router();
 
-router.get("/", getAll);
+router.get("/", verifyToken, verifyAdmin, getAll);
 router.get("/stats", resolveUser, getStats);
-router.patch("/:id/block", toggleBlock);
+router.patch("/:id/block", verifyToken, verifyAdmin, toggleBlock);
 router.patch("/profile", verifyToken, resolveUser, updateProfile);
 
 module.exports = router;
