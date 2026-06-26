@@ -68,6 +68,7 @@ exports.create = async (req, res) => {
     if (recipeCount >= 2 && !req.user.isPremium)
       return res.status(403).json({ message: "Upgrade to premium to add more recipes" });
 
+    // console.log("[recipe.create] payload:", req.body);
     const recipe = await Recipe.create({ ...req.body });
     res.status(201).json(recipe);
   } catch (error) {
