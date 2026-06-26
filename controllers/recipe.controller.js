@@ -2,7 +2,14 @@ const Recipe = require("../models/Recipe");
 
 exports.getAll = async (req, res) => {
   try {
-    const { categories, authorEmail, showAll, search, page = 1, limit = 10 } = req.query;
+    const {
+      categories,
+      authorEmail,
+      showAll,
+      search,
+      page = 1,
+      limit = 10,
+    } = req.query;
     const filter = {};
     if (!showAll) filter.status = "active";
     if (categories) filter.category = { $in: categories.split(",") };
@@ -35,7 +42,10 @@ exports.getAll = async (req, res) => {
 
 exports.getFeatured = async (req, res) => {
   try {
-    const recipes = await Recipe.find({ isFeatured: true, status: "active" }).sort({ createdAt: -1 });
+    const recipes = await Recipe.find({
+      isFeatured: true,
+      status: "active",
+    }).sort({ createdAt: -1 });
     res.json(recipes);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -44,7 +54,9 @@ exports.getFeatured = async (req, res) => {
 
 exports.getPopular = async (req, res) => {
   try {
-    const recipes = await Recipe.find({ status: "active" }).sort({ likesCount: -1 }).limit(3);
+    const recipes = await Recipe.find({ status: "active" })
+      .sort({ likesCount: -1 })
+      .limit(3);
     res.json(recipes);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -64,9 +76,13 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const recipeCount = await Recipe.countDocuments({ authorEmail: req.user.email });
+    const recipeCount = await Recipe.countDocuments({
+      authorEmail: req.user.email,
+    });
     if (recipeCount >= 2 && !req.user.isPremium)
-      return res.status(403).json({ message: "Upgrade to premium to add more recipes" });
+      return res
+        .status(403)
+        .json({ message: "Upgrade to premium to add more recipes" });
 
     const recipe = await Recipe.create({ ...req.body });
     res.status(201).json(recipe);
@@ -80,9 +96,13 @@ exports.update = async (req, res) => {
     const recipe = await Recipe.findById(req.params.id);
     if (!recipe) return res.status(404).json({ message: "Recipe not found" });
     if (recipe.authorEmail !== req.user.email)
-      return res.status(403).json({ message: "Not authorized to update this recipe" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to update this recipe" });
 
-    const updated = await Recipe.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await Recipe.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     res.json(updated);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -94,7 +114,9 @@ exports.remove = async (req, res) => {
     const recipe = await Recipe.findById(req.params.id);
     if (!recipe) return res.status(404).json({ message: "Recipe not found" });
     if (recipe.authorEmail !== req.user.email)
-      return res.status(403).json({ message: "Not authorized to delete this recipe" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this recipe" });
 
     recipe.status = "deleted";
     await recipe.save();

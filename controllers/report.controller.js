@@ -5,7 +5,9 @@ exports.create = async (req, res) => {
   try {
     const { recipeId, reason, note } = req.body;
     if (!recipeId || !reason)
-      return res.status(400).json({ message: "Recipe ID and reason are required" });
+      return res
+        .status(400)
+        .json({ message: "Recipe ID and reason are required" });
 
     const report = await Report.create({
       recipeId,
@@ -22,7 +24,9 @@ exports.create = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const reports = await Report.find().populate("recipeId").sort({ createdAt: -1 });
+    const reports = await Report.find()
+      .populate("recipeId")
+      .sort({ createdAt: -1 });
     res.json(reports);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -34,7 +38,7 @@ exports.dismiss = async (req, res) => {
     const report = await Report.findByIdAndUpdate(
       req.params.id,
       { status: "dismissed" },
-      { new: true }
+      { new: true },
     );
     if (!report) return res.status(404).json({ message: "Report not found" });
     res.json(report);

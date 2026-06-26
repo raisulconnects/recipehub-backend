@@ -2,7 +2,9 @@ const Favorite = require("../models/Favorite");
 
 exports.getAll = async (req, res) => {
   try {
-    const favorites = await Favorite.find({ userEmail: req.user.email }).populate("recipeId");
+    const favorites = await Favorite.find({
+      userEmail: req.user.email,
+    }).populate("recipeId");
     res.json(favorites);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -12,7 +14,10 @@ exports.getAll = async (req, res) => {
 exports.add = async (req, res) => {
   try {
     const { recipeId } = req.body;
-    const existing = await Favorite.findOne({ userEmail: req.user.email, recipeId });
+    const existing = await Favorite.findOne({
+      userEmail: req.user.email,
+      recipeId,
+    });
     if (existing)
       return res.status(400).json({ message: "Recipe already in favorites" });
 
@@ -34,8 +39,7 @@ exports.remove = async (req, res) => {
       userEmail: req.user.email,
       recipeId: req.params.recipeId,
     });
-    if (!result)
-      return res.status(404).json({ message: "Favorite not found" });
+    if (!result) return res.status(404).json({ message: "Favorite not found" });
 
     res.json({ message: "Removed from favorites" });
   } catch (error) {

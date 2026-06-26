@@ -6,7 +6,8 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 exports.createCheckoutSession = async (req, res) => {
   try {
     const { type, recipeId } = req.body;
-    if (!type) return res.status(400).json({ message: "Payment type is required" });
+    if (!type)
+      return res.status(400).json({ message: "Payment type is required" });
 
     let session;
     if (type === "recipe") {
@@ -14,8 +15,22 @@ exports.createCheckoutSession = async (req, res) => {
         payment_method_types: ["card"],
         mode: "payment",
         customer_email: req.user.email,
-        line_items: [{ price_data: { currency: "usd", product_data: { name: "Recipe Purchase" }, unit_amount: 299 }, quantity: 1 }],
-        metadata: { userId: req.user.id, userEmail: req.user.email, type, recipeId: recipeId || "" },
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: { name: "Recipe Purchase" },
+              unit_amount: 299,
+            },
+            quantity: 1,
+          },
+        ],
+        metadata: {
+          userId: req.user.id,
+          userEmail: req.user.email,
+          type,
+          recipeId: recipeId || "",
+        },
         success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=recipe`,
         cancel_url: `${process.env.CLIENT_URL}`,
       });
@@ -24,7 +39,16 @@ exports.createCheckoutSession = async (req, res) => {
         payment_method_types: ["card"],
         mode: "payment",
         customer_email: req.user.email,
-        line_items: [{ price_data: { currency: "usd", product_data: { name: "Premium Membership" }, unit_amount: 999 }, quantity: 1 }],
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: { name: "Premium Membership" },
+              unit_amount: 999,
+            },
+            quantity: 1,
+          },
+        ],
         metadata: { userId: req.user.id, userEmail: req.user.email, type },
         success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=premium`,
         cancel_url: `${process.env.CLIENT_URL}`,
@@ -42,7 +66,8 @@ exports.createCheckoutSession = async (req, res) => {
 exports.verify = async (req, res) => {
   try {
     const { session_id } = req.query;
-    if (!session_id) return res.status(400).json({ message: "Session ID is required" });
+    if (!session_id)
+      return res.status(400).json({ message: "Session ID is required" });
 
     const session = await stripe.checkout.sessions.retrieve(session_id);
     if (session.payment_status !== "paid")
