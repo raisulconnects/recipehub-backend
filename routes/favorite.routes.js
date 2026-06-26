@@ -5,7 +5,7 @@ const { getAll, add, remove } = require("../controllers/favorite.controller");
 
 const router = Router();
 
-router.get("/", resolveUser, getAll);
+router.get("/", verifyToken, resolveUser, getAll);
 router.post("/", verifyToken, resolveUser, add);
 router.delete("/:recipeId", verifyToken, resolveUser, remove);
 

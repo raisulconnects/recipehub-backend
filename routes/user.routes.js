@@ -12,7 +12,7 @@ const {
 const router = Router();
 
 router.get("/", resolveUser, verifyAdmin, getAll);
-router.get("/stats", resolveUser, getStats);
+router.get("/stats", verifyToken, resolveUser, getStats);
 router.patch("/:id/block", verifyToken, resolveUser, verifyAdmin, toggleBlock);
 router.patch("/profile", verifyToken, resolveUser, updateProfile);
 
