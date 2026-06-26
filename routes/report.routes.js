@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const resolveUser = require("../middleware/resolveUser");
 const verifyToken = require("../middleware/verifyToken");
+const verifyAdmin = require("../middleware/verifyAdmin");
 const {
   create,
   getAll,
@@ -11,8 +12,8 @@ const {
 const router = Router();
 
 router.post("/", verifyToken, resolveUser, create);
-router.get("/", getAll);
-router.patch("/:id/dismiss", dismiss);
-router.delete("/:id/remove-recipe", removeRecipe);
+router.get("/", verifyToken, verifyAdmin, getAll);
+router.patch("/:id/dismiss", verifyToken, verifyAdmin, dismiss);
+router.delete("/:id/remove-recipe", verifyToken, verifyAdmin, removeRecipe);
 
 module.exports = router;
