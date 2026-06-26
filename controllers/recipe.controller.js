@@ -95,7 +95,7 @@ exports.update = async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id);
     if (!recipe) return res.status(404).json({ message: "Recipe not found" });
-    if (recipe.authorEmail !== req.user.email)
+    if (recipe.authorEmail !== req.user.email && req.user.role !== "admin")
       return res
         .status(403)
         .json({ message: "Not authorized to update this recipe" });
@@ -113,7 +113,7 @@ exports.remove = async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id);
     if (!recipe) return res.status(404).json({ message: "Recipe not found" });
-    if (recipe.authorEmail !== req.user.email)
+    if (recipe.authorEmail !== req.user.email && req.user.role !== "admin")
       return res
         .status(403)
         .json({ message: "Not authorized to delete this recipe" });

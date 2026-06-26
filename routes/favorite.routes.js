@@ -1,11 +1,7 @@
 const { Router } = require("express");
 const resolveUser = require("../middleware/resolveUser");
 const verifyToken = require("../middleware/verifyToken");
-const {
-  getAll,
-  add,
-  remove,
-} = require("../controllers/favorite.controller");
+const { getAll, add, remove } = require("../controllers/favorite.controller");
 
 const router = Router();
 

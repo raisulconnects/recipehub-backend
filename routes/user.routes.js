@@ -11,9 +11,9 @@ const {
 
 const router = Router();
 
-router.get("/", verifyToken, verifyAdmin, getAll);
+router.get("/", resolveUser, verifyAdmin, getAll);
 router.get("/stats", resolveUser, getStats);
-router.patch("/:id/block", verifyToken, verifyAdmin, toggleBlock);
+router.patch("/:id/block", verifyToken, resolveUser, verifyAdmin, toggleBlock);
 router.patch("/profile", verifyToken, resolveUser, updateProfile);
 
 module.exports = router;

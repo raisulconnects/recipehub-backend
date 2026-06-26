@@ -12,8 +12,8 @@ const {
 const router = Router();
 
 router.post("/", verifyToken, resolveUser, create);
-router.get("/", verifyToken, verifyAdmin, getAll);
-router.patch("/:id/dismiss", verifyToken, verifyAdmin, dismiss);
-router.delete("/:id/remove-recipe", verifyToken, verifyAdmin, removeRecipe);
+router.get("/", resolveUser, verifyAdmin, getAll);
+router.patch("/:id/dismiss", verifyToken, resolveUser, verifyAdmin, dismiss);
+router.delete("/:id/remove-recipe", verifyToken, resolveUser, verifyAdmin, removeRecipe);
 
 module.exports = router;

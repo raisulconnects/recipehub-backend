@@ -24,6 +24,6 @@ router.post("/", verifyToken, resolveUser, create);
 router.patch("/:id", verifyToken, resolveUser, update);
 router.delete("/:id", verifyToken, resolveUser, remove);
 router.patch("/:id/like", verifyToken, resolveUser, toggleLike);
-router.patch("/:id/feature", verifyToken, verifyAdmin, toggleFeature);
+router.patch("/:id/feature", verifyToken, resolveUser, verifyAdmin, toggleFeature);
 
 module.exports = router;
