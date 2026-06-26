@@ -45,7 +45,6 @@ exports.verify = async (req, res) => {
     if (!session_id) return res.status(400).json({ message: "Session ID is required" });
 
     const session = await stripe.checkout.sessions.retrieve(session_id);
-    // console.log("[payment.verify] session retrieved:", { id: session.id, status: session.payment_status, metadata: session.metadata });
     if (session.payment_status !== "paid")
       return res.status(400).json({ message: "Payment not completed" });
 
