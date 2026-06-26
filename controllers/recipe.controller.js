@@ -76,6 +76,7 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ message: "Not authenticated" });
     const recipeCount = await Recipe.countDocuments({
       authorEmail: req.user.email,
     });
@@ -93,6 +94,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ message: "Not authenticated" });
     const recipe = await Recipe.findById(req.params.id);
     if (!recipe) return res.status(404).json({ message: "Recipe not found" });
     if (recipe.authorEmail !== req.user.email && req.user.role !== "admin")
@@ -111,6 +113,7 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ message: "Not authenticated" });
     const recipe = await Recipe.findById(req.params.id);
     if (!recipe) return res.status(404).json({ message: "Recipe not found" });
     if (recipe.authorEmail !== req.user.email && req.user.role !== "admin")
@@ -128,6 +131,7 @@ exports.remove = async (req, res) => {
 
 exports.toggleLike = async (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ message: "Not authenticated" });
     const recipe = await Recipe.findById(req.params.id);
     if (!recipe || recipe.status === "deleted")
       return res.status(404).json({ message: "Recipe not found" });

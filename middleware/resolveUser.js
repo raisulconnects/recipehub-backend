@@ -4,6 +4,7 @@ const COOKIE_NAME = "better-auth.session_token";
 
 const resolveUser = async (req, res, next) => {
   try {
+    await mongoose.connection.asPromise();
     let userId;
 
     const cookie = req.cookies?.[COOKIE_NAME];

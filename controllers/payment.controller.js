@@ -100,6 +100,7 @@ exports.verify = async (req, res) => {
 
 exports.getPurchased = async (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ message: "Not authenticated" });
     const payments = await Payment.find({
       userEmail: req.user.email,
       type: "recipe",

@@ -2,6 +2,7 @@ const Favorite = require("../models/Favorite");
 
 exports.getAll = async (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ message: "Not authenticated" });
     const favorites = await Favorite.find({
       userEmail: req.user.email,
     }).populate("recipeId");
@@ -13,6 +14,7 @@ exports.getAll = async (req, res) => {
 
 exports.add = async (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ message: "Not authenticated" });
     const { recipeId } = req.body;
     const existing = await Favorite.findOne({
       userEmail: req.user.email,
@@ -35,6 +37,7 @@ exports.add = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
+    if (!req.user) return res.status(401).json({ message: "Not authenticated" });
     const result = await Favorite.findOneAndDelete({
       userEmail: req.user.email,
       recipeId: req.params.recipeId,
