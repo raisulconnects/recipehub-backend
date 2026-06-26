@@ -13,7 +13,7 @@ const router = Router();
 
 router.post("/create-checkout-session", verifyToken, resolveUser, createCheckoutSession);
 router.get("/verify", resolveUser, verify);
-router.get("/purchased", resolveUser, getPurchased);
+router.get("/purchased", verifyToken, resolveUser, getPurchased);
 router.get("/transactions", verifyToken, verifyAdmin, getTransactions);
 
 module.exports = router;
